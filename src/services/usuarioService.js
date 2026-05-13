@@ -3,8 +3,8 @@
  * Contiene la lógica de negocio para gestionar usuarios
  */
 
-const db = require('../config/db');
-const Usuario = require('../entities/Usuario');
+const db = require("../config/db");
+const Usuario = require("../entities/Usuario");
 
 const usuarioRepository = db.getRepository(Usuario);
 
@@ -23,9 +23,8 @@ const crearUsuario = async (datosUsuario) => {
  * @returns {Array} Array de todos los usuarios
  */
 const obtenerTodosLosUsuarios = async () => {
-  // TODO: Implementar la obtención de todos los usuarios
-  // Ayudita: Usa usuarioRepository.find()
-  return [];
+  // Retorna todos los registros de la tabla
+  return await usuarioRepository.find(); //usuarioRepository.find() es el comando que va al la base de datos y ejecutato la tabla y lo da como arreglo
 };
 
 /**
@@ -34,9 +33,8 @@ const obtenerTodosLosUsuarios = async () => {
  * @returns {Object|null} El usuario encontrado o null
  */
 const obtenerUsuarioPorId = async (id) => {
-  // TODO: Implementar la obtención de un usuario por ID
-  // Ayudita: Usa usuarioRepository.findOneBy({ id })
-  return null;
+  // Busca un usuario por su ID
+  return await usuarioRepository.findOneBy({ id }); //usuarioRepository.findOneBy({ id }) es el comando para buscar por una id que le pedimos al usurio
 };
 
 /**
@@ -46,10 +44,10 @@ const obtenerUsuarioPorId = async (id) => {
  * @returns {Object|null} El usuario actualizado o null si no existe
  */
 const actualizarUsuario = async (id, datosActualizados) => {
-  // TODO: Implementar la actualización de un usuario
-  // Ayudita: Primero usa usuarioRepository.update(id, datosActualizados)
-  // Y luego retorna el usuario actualizado usando obtenerUsuarioPorId(id)
-  return null;
+  // Actualizamos el usuario con los datos que lleguen
+  await usuarioRepository.update(id, datosActualizados); //.update() va a la base de datos y modifica los campos
+  // Retornamos el usuario actualizado
+  return await obtenerUsuarioPorId(id); //mostar el usuario modificado con la funcion de arriba
 };
 
 /**
@@ -58,9 +56,9 @@ const actualizarUsuario = async (id, datosActualizados) => {
  * @returns {boolean} true si se eliminó, false si no existe
  */
 const eliminarUsuario = async (id) => {
-  // TODO: Implementar la eliminación de un usuario
-  // Ayudita: Usa usuarioRepository.delete(id) y verifica result.affected
-  return false;
+  // Eliminamos y verificamos si se afectó alguna fila
+  const result = await usuarioRepository.delete(id); //va a la base de datos y elimnia segun el id
+  return result.affected > 0; // si da mayor a 0  el usuario existio y se elminio correctamente si da 0 no se encontro o no existia el usuario
 };
 
 module.exports = {
@@ -68,5 +66,5 @@ module.exports = {
   obtenerTodosLosUsuarios,
   obtenerUsuarioPorId,
   actualizarUsuario,
-  eliminarUsuario
+  eliminarUsuario,
 };
